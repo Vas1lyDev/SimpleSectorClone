@@ -7,16 +7,11 @@
 static qint64 ceilTo(qint64 v, qint64 a) { return (a>0)? ((v + a - 1) / a) * a : v; }
 static qint64 floorTo(qint64 v, qint64 a) { return (a>0)? (v - (v % a)) : v; }
 
-int main(int argc, char *argv[]) {
-    QCoreApplication app(argc, argv);
-    QCoreApplication::setApplicationName("rawwriter");
-    QCoreApplication::setApplicationVersion("6.0");
-#ifdef Q_OS_WIN
-system("chcp 65001");
-#endif
+
+int logicExec(){
     QTextStream out(stdout), err(stderr);
 
-    out << "=== RawWriter v6 (класс DiskIO) ===\n";
+    out << "=== RawWriter ===\n";
 
     auto disks = DiskIO::enumerate(err);
     if (disks.isEmpty()) return 1;
@@ -160,4 +155,17 @@ system("chcp 65001");
         bool okCopy = DiskIO::copyAlignedWithPadding(dev, outFile, (toRead>0? toRead : 0x7fffffffffffffffLL), blockSize, sector, false, out, err);
         return okCopy ? 0 : 2;
     }
+}
+
+int main(int argc, char *argv[]) {
+    QCoreApplication app(argc, argv);
+    QCoreApplication::setApplicationName("rawwriter");
+    QCoreApplication::setApplicationVersion("6.0");
+#ifdef Q_OS_WIN
+system("chcp 65001");
+#endif
+auto retVal=logicExec();
+QTextStream(stdout)<<"\n\nНажмите Enter для завершения...\n";
+QTextStream(stdin).readLine();
+return retVal;
 }
